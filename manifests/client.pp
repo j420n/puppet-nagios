@@ -18,7 +18,7 @@ class nagios::client (
   $nrpe_server_address              = undef,
   $nrpe_user                        = $::nagios::params::nrpe_user,
   $nrpe_group                       = $::nagios::params::nrpe_group,
-  $nrpe_allowed_hosts               = '127.0.0.1',
+  $nrpe_allowed_hosts               = hiera("nagios::client::nrpe_allowed_hosts", '127.0.0.1'),
   $nrpe_dont_blame_nrpe             = '0',
   $nrpe_command_prefix              = undef,
   $nrpe_debug                       = '0',
