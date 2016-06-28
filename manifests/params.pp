@@ -82,7 +82,25 @@ class nagios::params {
         tag    => $nagios_plugins_packages,
       }
     }
-    'Debian', 'Ubuntu': {
+    'Debian': {
+      $nrpe_package       = [ 'nagios-nrpe-server' ]
+      $nrpe_package_alias = 'nrpe'
+      $nrpe_service       = 'nagios-nrpe-server'
+      $nrpe_user          = 'nagios'
+      $nrpe_group         = 'nagios'
+      $nrpe_pid_file      = hiera('nagios::params::nrpe_pid_file','/var/run/nagios/nrpe.pid')
+      $nrpe_cfg_dir       = hiera('nagios::params::nrpe_cfg_dir','/etc/nagios/nrpe.d')
+      $plugin_dir         = hiera('nagios::params::plugin_dir','/usr/lib/nagios/plugins')
+      $pid_file           = hiera('nagios::params::pid_file','/var/run/nagios/nagios.pid')
+      $megaclibin         = '/opt/bin/MegaCli'
+      $perl_memcached     = 'libcache-memcached-perl'
+      # No package splitting in Debian
+      @package { 'nagios-plugins':
+        ensure => installed,
+        tag    => $nagios_plugins_packages,
+      }
+    }
+      'Ubuntu': {
       $nrpe_package       = [ 'nagios-nrpe-server' ]
       $nrpe_package_alias = 'nrpe'
       $nrpe_service       = 'nagios-nrpe-server'

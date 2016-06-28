@@ -3,8 +3,8 @@
 # This is the main class to be included on all nodes to be monitored by nagios.
 #
 class nagios::client (
-  $nagios_host_name                 = $::nagios_host_name,
-  $nagios_server                    = $::nagios_server,
+  $nagios_host_name                 = hiera("nagios::client::nagios_host_name", $::nagios_host_name),
+  $nagios_server                    = hiera("nagios::client::nagios_server", $::nagios_server),
   # nrpe
   $nrpe_package                     = $::nagios::params::nrpe_package,
   $nrpe_package_alias               = $::nagios::params::nrpe_package_alias,
@@ -25,7 +25,7 @@ class nagios::client (
   $nrpe_command_timeout             = '60',
   $nrpe_connection_timeout          = '300',
   # host defaults
-  $host_address                     = $::nagios_host_address,
+  $host_address                     = hiera("nagios::client::nagios_host_address", $nagios_host_address),
   $host_address6                    = $::nagios_host_address6,
   $host_alias                       = $::nagios_host_alias,
   $host_check_period                = $::nagios_host_check_period,
