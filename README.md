@@ -54,6 +54,27 @@ official repositories or EPEL can be found on http://dl.marmotte.net/rpms/
 
 When SELinux is enforcing, the `selinux::audit2allow` definition is required
 to allow some basic nagios/nrpe accesses, though it can also be disabled.
+##Sample Usage to configure the server with hiera on Ubuntu 14.04
+
+<pre><code>
+---
+#The Nagios node.
+message: "This node is using hieradata from /etc/puppet/environments/development/hieradata/nodes/nagios-master01.yaml."
+#################
+#INCLUDE CLASSES#
+#################
+classes:
+    - 'nagios::server'
+    
+
+nagios::server::package_name: 'nagios3'
+nagios::server::service_name: 'nagios3'
+nagios::server::mailx_package: 'bsd-mailx'
+nagios::server::apache_httpd: false
+nagios::server::apache_httpd_ssl: false
+nagios::server::php: false
+</code></pre>
+
 
 ## Sample Usage
 
