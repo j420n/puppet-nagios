@@ -2,12 +2,13 @@
 #
 class nagios::server (
   # For the tag of the stored configuration to realize
-  $nagios_server         = 'default',
-  $nagios_server_package = hiera(nagios::server::package, 'nagios'),
-  $mailx_package         = hiera(nagios::server::mailx_package, 'mailx'),
-  $apache_httpd          = true,
-  $apache_httpd_ssl      = true,
-  $apache_httpd_modules  = [
+  $nagios_server              = 'default',
+  $nagios_server_package      = hiera(nagios::server::package, 'nagios'),
+  $nagios_server_service_name = hiera(nagios::server::service_name, 'nagios'),
+  $mailx_package              = hiera(nagios::server::mailx_package, 'mailx'),
+  $apache_httpd               = true,
+  $apache_httpd_ssl           = true,
+  $apache_httpd_modules       = [
     'auth_basic',
     'authn_file',
     'authz_host',
@@ -165,7 +166,7 @@ class nagios::server (
   # For the default email notifications to work
   ensure_packages([$mailx_package])
 
-  service { 'nagios':
+  service { $nagios_server_service_name:
     ensure    => 'running',
     enable    => true,
     # "service nagios status" returns 0 when "nagios is not running" :-(
@@ -235,7 +236,7 @@ class nagios::server (
     group   => 'root',
     mode    => '0644',
     content => template('nagios/nagios.cfg.erb'),
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   file { '/etc/nagios/private/resource.cfg':
@@ -243,7 +244,7 @@ class nagios::server (
     group   => 'nagios',
     mode    => '0640',
     content => template('nagios/resource.cfg.erb'),
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
 
@@ -251,43 +252,43 @@ class nagios::server (
   # Automatically reload nagios for relevant configuration changes
   # Require the package for the parent directory to exist initially
   Nagios_command <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_contact <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_contactgroup <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_host <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_hostdependency <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_hostgroup <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_service <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_servicedependency <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_servicegroup <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_timeperiod <<| tag == "nagios-${nagios_server}" |>> {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
 
@@ -296,39 +297,39 @@ class nagios::server (
   # We'll need to wrap around these types with our own
   # definitions like for "host"
   Nagios_command {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_contact {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_contactgroup {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_host {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_hostdependency {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_hostgroup {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_service {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_servicegroup {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
   Nagios_timeperiod {
-    notify  => Service['nagios'],
+    notify  => Service[$nagios_server_service_name],
     require   => Package[$nagios_server_package],
   }
 
@@ -366,7 +367,7 @@ class nagios::server (
     owner  => 'root',
     group  => 'nagios',
     mode   => '0640',
-    before => Service['nagios'],
+    before => Service[$nagios_server_service_name],
   }
 
   # Nagios commands
