@@ -2,11 +2,12 @@
 #
 class nagios::server (
   # For the tag of the stored configuration to realize
-  $nagios_server        = 'default',
+  $nagios_server         = 'default',
   $nagios_server_package = hiera(nagios::server::package, 'nagios'),
-  $apache_httpd         = true,
-  $apache_httpd_ssl     = true,
-  $apache_httpd_modules = [
+  $mailx_package         = hiera(nagios::server::mailx_package, 'mailx'),
+  $apache_httpd          = true,
+  $apache_httpd_ssl      = true,
+  $apache_httpd_modules  = [
     'auth_basic',
     'authn_file',
     'authz_host',
@@ -162,7 +163,7 @@ class nagios::server (
 
   # Other packages
   # For the default email notifications to work
-  ensure_packages(['mailx'])
+  ensure_packages([$mailx_package])
 
   service { 'nagios':
     ensure    => 'running',
