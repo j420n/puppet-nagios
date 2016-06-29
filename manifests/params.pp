@@ -112,10 +112,26 @@ class nagios::params {
       $pid_file           = hiera('nagios::params::pid_file','/var/run/nagios/nagios.pid')
       $megaclibin         = '/opt/bin/MegaCli'
       $perl_memcached     = 'libcache-memcached-perl'
-      # No package splitting in Debian
+
+      #Ubuntu 14.04
+      #nagios-plugins - Plugins for nagios compatible monitoring systems (metapackage)
+      #nagios-plugins-basic - Plugins for nagios compatible monitoring systems
+      #nagios-plugins-common - Common files for plugins for nagios compatible monitoring
+      #nagios-plugins-standard - Plugins for nagios compatible monitoring systems
+      #nagios-plugin-check-multi - run nagios checks as a group
+      #nagios-plugins-contrib - Plugins for nagios compatible monitoring systems
+      #nagios-plugins-extra - Plugins for the nagios network monitoring and manegement system.
+      #nagios-plugins-openstack - Plugins for nagios compatible monitoring OpenStack based systems
+      #nagios-plugins - Plugins for nagios compatible monitoring systems (metapackage)
+      #nagios-plugins-basic - Plugins for nagios compatible monitoring systems
+      #nagios-plugins-common - Common files for plugins for nagios compatible monitoring
+      #nagios-plugins-standard - Plugins for nagios compatible monitoring systems
+
+      $ubuntu_plugin_packages = ['nagios-plugins','nagios-plugins-contrib']
+
       @package { 'nagios-plugins':
         ensure => installed,
-        tag    => $nagios_plugins_packages,
+        tag    => $ubuntu_plugin_packages,
       }
     }
     default: {

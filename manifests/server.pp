@@ -3,6 +3,7 @@
 class nagios::server (
   # For the tag of the stored configuration to realize
   $nagios_server        = 'default',
+  $nagios_server_package = hiera(nagios::server::package, 'nagios'),
   $apache_httpd         = true,
   $apache_httpd_ssl     = true,
   $apache_httpd_modules = [
@@ -116,24 +117,7 @@ class nagios::server (
   # Full nrpe command to run, with default options
   $nrpe = "${nrpe_command} ${nrpe_options}"
 
-  # Plugin packages required on the server side
-  package { [
-    'nagios',
-    'nagios-plugins-dhcp',
-    'nagios-plugins-dns',
-    'nagios-plugins-icmp',
-    'nagios-plugins-ldap',
-    'nagios-plugins-nrpe',
-    'nagios-plugins-ping',
-    'nagios-plugins-smtp',
-    'nagios-plugins-snmp',
-    'nagios-plugins-ssh',
-    'nagios-plugins-tcp',
-  ]:
-    ensure => installed,
-  }
-  # Plugin packages required on both the client and server sides
-  Package <| tag == 'nagios-plugins-http' |>
+  package { $nagios_server_package: ensure => "installed" }
 
   # Custom plugin scripts required on the server
   if $plugin_nginx {
@@ -189,7 +173,7 @@ class nagios::server (
     pattern   => '/usr/sbin/nagios',
     # Work around files created root:root mode 600 (known issue)
     restart   => '/bin/chgrp nagios /etc/nagios/nagios_*.cfg && /bin/chmod 640 /etc/nagios/nagios_*.cfg && /sbin/service nagios reload',
-    require   => Package['nagios'],
+    require   => Package[$nagios_server_package],
   }
 
   if $apache_httpd {
