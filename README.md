@@ -65,7 +65,7 @@ message: "This node is using hieradata from /etc/puppet/environments/development
 #################
 classes:
     - 'nagios::server'
-    
+
 
 nagios::server::package_name: 'nagios3'
 nagios::server::service_name: 'nagios3'
